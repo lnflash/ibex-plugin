@@ -1,4 +1,6 @@
 # ibex-plugin
+![galoy-ibex-plugin-logo](https://github.com/lnflash/ibex-plugin/assets/34528298/40eb0306-560d-4c71-aded-bd984c3f7e29)
+
 This open-source project is an add-on to the [galoy](https://github.com/GaloyMoney/galoy) instance. 
 The goal is to have a modular addition to the galoy backend, so that a frontend application can have the option of using a custodial BTC or USD wallet from the IBEX API.
 
