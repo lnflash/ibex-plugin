@@ -1,7 +1,23 @@
-import UserResolvers from "./userResolver"
+import ExternalWalletResolvers from "./externalWalletResolver"
 import AuthenticationResolvers from "./authenticationResolver"
 
-export default {
-  UserResolvers,
-  AuthenticationResolvers,
+const resolvers = {
+  Query: {
+    ...ExternalWalletResolvers.Query,
+    // Add other Query resolvers here...
+  },
+  Mutation: {
+    ...ExternalWalletResolvers.Mutation,
+    ...AuthenticationResolvers.Mutation,
+    // Add other Mutation resolvers here...
+  },
+  ConsumerAccount: {
+    ...ExternalWalletResolvers.ConsumerAccount,
+  },
+  ExternalWallet: {
+    ...ExternalWalletResolvers.ExternalWallet,
+  },
+  // Add other types here...
 }
+
+export default resolvers

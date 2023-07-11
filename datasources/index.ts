@@ -1,4 +1,4 @@
 export { default as BaseAPI } from "./baseAPI"
 export { default as AuthenticationAPI } from "./authenticationAPI"
-export { default as UserAPI } from "./userAPI"
-export { default as WalletAPI } from "./walletAPI"
+export { default as ExternalWalletAPI } from "./externalWalletAPI"
+// export { default as WalletAPI } from "./walletAPI"

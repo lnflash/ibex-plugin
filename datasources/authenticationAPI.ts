@@ -1,10 +1,12 @@
 import { Redis } from "ioredis"
 
+import getSecondsUntilExpiry from "../utils/math"
+
 import BaseAPI from "./baseAPI"
 
 const redis = new Redis()
 
-// Define the response shape
+// Define the response shapes
 interface ExternalWalletSignInResponse {
   accessToken: string
   accessTokenExpiresAt: number
@@ -12,30 +14,48 @@ interface ExternalWalletSignInResponse {
   refreshTokenExpiresAt: number
 }
 
+interface ExternalWalletAuthRefreshResponse {
+  accessToken: string
+  expiresAt: number
+}
+
 class AuthenticationAPI extends BaseAPI {
   async getAuthToken(
     email: string,
     password: string,
   ): Promise<ExternalWalletSignInResponse> {
+    const url = "https://ibexhub.ibexmercado.com/auth/signin"
+    const options = {
+      method: "POST",
+      headers: { "accept": "application/json", "content-type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    }
     try {
-      const { data }: { data: ExternalWalletSignInResponse } = await this.sdk.signIn({
-        email,
-        password,
-      })
+      const data: ExternalWalletSignInResponse = await this.makeRequest(
+        url,
+        options,
+        null,
+      )
+      const secondsUntilAccessTokenExpiry = getSecondsUntilExpiry(
+        data.accessTokenExpiresAt,
+      )
+      const secondsUntilRefreshTokenExpiry = getSecondsUntilExpiry(
+        data.refreshTokenExpiresAt,
+      )
+
       // Store auth token
       await redis.set(
         `authToken:ibexMain`,
         data.accessToken,
         "EX",
-        data.accessTokenExpiresAt,
+        secondsUntilAccessTokenExpiry,
       )
       await redis.set(
         `refreshToken:ibexMain`,
         data.refreshToken,
         "EX",
-        data.refreshTokenExpiresAt,
+        secondsUntilRefreshTokenExpiry,
       )
-
       return data
     } catch (err) {
       console.error(err)
@@ -43,26 +63,29 @@ class AuthenticationAPI extends BaseAPI {
     }
   }
 
-  async refreshAuthToken(refreshToken: string): Promise<ExternalWalletSignInResponse> {
+  async refreshAuthToken(
+    refreshToken: string,
+  ): Promise<ExternalWalletAuthRefreshResponse> {
+    const url = "https://ibexhub.ibexmercado.com/auth/refresh-access-token"
+    const options = {
+      method: "POST",
+      headers: { "accept": "application/json", "content-type": "application/json" },
+      body: JSON.stringify({ refreshToken }),
+    }
     try {
-      const { data }: { data: ExternalWalletSignInResponse } =
-        await this.sdk.refreshAccessToken({
-          refreshToken,
-        })
+      const data: ExternalWalletAuthRefreshResponse = await this.makeRequest(
+        url,
+        options,
+        null,
+      )
+      const secondsUntilAccessTokenExpiry = getSecondsUntilExpiry(data.expiresAt)
       // Store auth token
       await redis.set(
         `authToken:ibexMain`,
         data.accessToken,
         "EX",
-        data.accessTokenExpiresAt,
+        secondsUntilAccessTokenExpiry,
       )
-      await redis.set(
-        `refreshToken:ibexMain`,
-        data.refreshToken,
-        "EX",
-        data.refreshTokenExpiresAt,
-      )
-
       return data
     } catch (err) {
       console.error(err)
