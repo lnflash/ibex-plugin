@@ -6,8 +6,20 @@ const ExternalWalletSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    externalId: {
+      type: String,
+      required: true,
+    },
     externalUserId: {
       type: String,
+      required: true,
+    },
+    organizationId: {
+      type: String,
+      required: true,
+    },
+    currencyId: {
+      type: Number,
       required: true,
     },
   },

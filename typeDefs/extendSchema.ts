@@ -1,23 +1,24 @@
-import { extendSchema, parse } from "graphql"
-import { isAuthenticated } from "@servers/graphql-server"
-import { applyMiddleware } from "graphql-middleware"
-import { shield } from "graphql-shield"
-import { Rule } from "graphql-shield/typings/rules"
+import { extendSchema, parse, lexicographicSortSchema, printSchema } from "graphql"
+import { addResolversToSchema } from "@graphql-tools/schema"
+import { isProd, isRunningJest } from "@config"
+
+import resolvers from "../resolvers"
 
 import { gqlMainSchema } from "../../../graphql/main"
 
 const extensionSDL = `
 extend type Query {
     externalWalletById(accountId: ID!): ExternalWallet
+    getExternalWalletDetails(accountId: ID!): ExternalWalletDetails!
 }
 
 extend type Mutation {
-    createExternalWallet(username: String!, currencyId: Int!): ExternalWallet
     getExternalWalletToken(credentials: ExternalWalletCredentials!): ExternalWalletSignInResponse!
-    refreshExternalWalletToken(refreshToken: String!): ExternalWalletSignInResponse!
+    refreshExternalWalletToken(refreshToken: String!): ExternalWalletAuthRefreshResponse!
+    createExternalWallet(credentials: CreateExternalWalletInput!): CreateExternalWalletResponse!
 }
 
-type ExternalWalletCredentials {
+input ExternalWalletCredentials {
     email: String!
     password: String!
 }
@@ -27,14 +28,42 @@ type ExternalWalletSignInResponse {
     accessTokenExpiresAt: Int!
     refreshToken: String!
     refreshTokenExpiresAt: Int!
-  }
+}
   
+type ExternalWalletAuthRefreshResponse {
+    accessToken: String!
+    expiresAt: Int!
+}
+
+input CreateExternalWalletInput {
+    currencyId: Int!
+    name: String!
+}
+
+type CreateExternalWalletResponse {
+    id: ID!
+    userId: ID!
+    organizationId: ID!
+    name: String
+    currencyId: Int
+}
+
+type ExternalWalletDetails {
+    id: ID!
+    userId: ID!
+    name: String!
+    currencyId: Int!
+    balance: Float!
+}
+
 type ExternalWallet implements Wallet {
     accountId: ID!
+    externalId: ID!
     externalUserId: ID!
+    organizationId: ID!
+    currencyId: Int!
     balance: SignedAmount!
     id: ID!
-    externalId: ID!
 
     """
     An unconfirmed incoming onchain balance.
@@ -88,16 +117,31 @@ type ExternalWallet implements Wallet {
         last: Int
     ): TransactionConnection
     walletCurrency: WalletCurrency!
+}
+
+extend interface Account {
+    externalWallets: [ExternalWallet!]!
+}
+
+extend type ConsumerAccount {
+    externalWallets: [ExternalWallet!]!
+  }
 `
 
 const extendedSchema = extendSchema(gqlMainSchema, parse(extensionSDL))
-const permissions = shield({
-  Query: {
-    myQuery: isAuthenticated,
-  },
+
+const schemaWithResolvers = addResolversToSchema({
+  schema: extendedSchema,
+  resolvers,
 })
 
-// Apply middleware and permissions to the merged schema
-const schema = applyMiddleware(extendedSchema, permissions)
+if (!isProd && !isRunningJest) {
+  import("@services/fs").then(({ writeSDLFile }) => {
+    writeSDLFile(
+      __dirname + "/schema.graphql",
+      printSchema(lexicographicSortSchema(extendedSchema)),
+    )
+  })
+}
 
-export default schema
+export default schemaWithResolvers
