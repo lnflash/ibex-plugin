@@ -4,7 +4,8 @@ export const getToken = (req: Request, res: Response) => {
   const token = req.headers.authorization;
 
   if (!token) {
-    res.status(401).send("missing authorization header")
+    res.status(401).send("missing authorization header");
+    return;
   }
   return token;
 }

@@ -6,7 +6,6 @@ import routes from '@ibex/app/router'
 import { closeDatabase, setupDatabase } from '@ibex/knex';
 
 
-
 (async () => {
   try {
     dotenv.config();
@@ -24,6 +23,8 @@ import { closeDatabase, setupDatabase } from '@ibex/knex';
     const port = process.env.PORT || 3000;
     app.listen(port, () => {
       console.log(`Server is running on port ${port}`);
+      
+      
     });
   } catch (error) {
     console.error('Error setting up the database:', error);

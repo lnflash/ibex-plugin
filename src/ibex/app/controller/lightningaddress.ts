@@ -3,6 +3,8 @@ import { IBEXEnum } from '@ibex/domain';
 import axios, { AxiosResponse } from 'axios';
 import { Request, Response } from 'express';
 import { IBEXLightningAddressData, IBEXLightningAddressPutBody, createLightningAddress, deleteLightningAddress, getLightningAddressesByAccountById, updateLightningAddress } from '@ibex/app/model/lightningaddress';
+import { IbexPayInvoiceWebhookPayload, insertPaymentInfoHandler } from '../model/lightningpayment';
+import { Invoice, updateLightningInvoiceByBoult11 } from '../model/lightninginvoice';
 
 
 
@@ -10,12 +12,12 @@ async function createLightningAddressHandler(req: Request, res: Response): Promi
     try {
         const token = getToken(req, res);
         // Check if the request body conforms to the expected structure
-        const { username, accountId } = req.body;
+        const { username, accountId, webhookUrl, webhookSecret } = req.body;
         if (!(typeof username === "string" && typeof accountId === "string")) {
             res.status(400).json({ error: "Invalid request body" });
             return;
         }
-        const response: AxiosResponse<IBEXLightningAddressData> = await axios.post(`${IBEXEnum.BASE_URL}lightning-address`, { username, accountId }, {
+        const response: AxiosResponse<IBEXLightningAddressData> = await axios.post(`${IBEXEnum.BASE_URL}lightning-address`, { username, accountId, webhookUrl, webhookSecret }, {
             headers: { Authorization: token },
         });
         await createLightningAddress(response.data);
@@ -76,4 +78,32 @@ async function deleteLightningAddressHandler(req: Request, res: Response): Promi
     }
 }
 
-export { createLightningAddressHandler, getLightningAddressesByAccountIdHandler, updateLightningAddressHandler, deleteLightningAddressHandler };
+async function receiveFundsWebhookHandler(req: Request, res: Response): Promise<void> {
+    const token = getToken(req, res);
+    try {
+        const { webhookSecret, transaction }: IbexPayInvoiceWebhookPayload = req.body;
+        if (webhookSecret == process.env.WEBHOOK_SECRET) {
+
+            await insertPaymentInfoHandler({
+                settleAtUtc: new Date(transaction.payment.settleDateUtc).getTime(),
+                hash: transaction.payment.hash,
+                status: transaction.payment.status.id,
+                failureReason: transaction.payment.failureId,
+                transaction
+            });
+            const invoiceRes: AxiosResponse<Invoice> = await axios.get(`${IBEXEnum.BASE_URL}invoice/from-bolt11/${transaction.payment.bolt11}`, {
+                headers: { Authorization: token },
+            });
+
+            await updateLightningInvoiceByBoult11(transaction.payment.bolt11, invoiceRes.data, transaction.payment.settleDateUtc)
+
+            res.status(200).send({ "msg": "Transaction Successful" })
+        } else {
+            res.status(401).send({ error: 'Invalid Secret' });
+        }
+    } catch (error: any) {
+        res.status(error.response?.status || 500).json({ error: error.response?.data?.error || "Internal Server Error" });
+    }
+}
+
+export { createLightningAddressHandler, getLightningAddressesByAccountIdHandler, updateLightningAddressHandler, deleteLightningAddressHandler, receiveFundsWebhookHandler };
