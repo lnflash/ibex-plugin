@@ -1,160 +1,168 @@
-import { createServer } from "http"
+import { createServer } from "https";
 
-import { context, propagation } from "@opentelemetry/api"
-import DataLoader from "dataloader"
-import express, { NextFunction, Request, Response } from "express"
+import { context, propagation } from "@opentelemetry/api";
+import DataLoader from "dataloader";
+import express, { NextFunction, Request, Response } from "express";
 
-import { Accounts, Transactions } from "@app"
+import { Accounts, Transactions } from "@app";
 import {
   GALOY_API_KEEPALIVE_TIMEOUT_MS,
   getApolloConfig,
   getGeetestConfig,
   getJwksArgs,
   isProd,
-} from "@config"
-import Geetest from "@services/geetest"
-import { baseLogger } from "@services/logger"
+} from "@config";
+import Geetest from "@services/geetest";
+import { baseLogger } from "@services/logger";
 import {
   ACCOUNT_USERNAME,
   SemanticAttributes,
   addAttributesToCurrentSpan,
   addAttributesToCurrentSpanAndPropagate,
   recordExceptionInCurrentSpan,
-} from "@services/tracing"
+} from "@services/tracing";
 import {
   ApolloServerPluginDrainHttpServer,
   ApolloServerPluginLandingPageDisabled,
   ApolloServerPluginLandingPageGraphQLPlayground,
-} from "apollo-server-core"
-import { ApolloError, ApolloServer } from "apollo-server-express"
-import { GetVerificationKey, expressjwt } from "express-jwt"
-import { GraphQLError, GraphQLSchema, execute, subscribe } from "graphql"
-import { rule } from "graphql-shield"
-import { Context, GRAPHQL_TRANSPORT_WS_PROTOCOL } from "graphql-ws"
-import { useServer } from "graphql-ws/lib/use/ws"
-import helmet from "helmet"
-import jsonwebtoken from "jsonwebtoken"
-import PinoHttp from "pino-http"
+} from "apollo-server-core";
+import { ApolloError, ApolloServer } from "apollo-server-express";
+import { GetVerificationKey, expressjwt } from "express-jwt";
+import { GraphQLError, GraphQLSchema, execute, subscribe } from "graphql";
+import { rule } from "graphql-shield";
+import { Context, GRAPHQL_TRANSPORT_WS_PROTOCOL } from "graphql-ws";
+import { useServer } from "graphql-ws/lib/use/ws";
+import helmet from "helmet";
+import jsonwebtoken from "jsonwebtoken";
+import PinoHttp from "pino-http";
 import {
   ExecuteFunction,
   GRAPHQL_WS,
   SubscribeFunction,
   SubscriptionServer,
-} from "subscriptions-transport-ws"
-import { WebSocketServer } from "ws"
-import { AuthenticationError, AuthorizationError } from "@graphql/error"
-import { mapError } from "@graphql/error-map"
-import { parseIps } from "@domain/accounts-ips"
-import { fieldExtensionsEstimator, simpleEstimator } from "graphql-query-complexity"
-import { createComplexityPlugin } from "graphql-query-complexity-apollo-plugin"
-import jwksRsa from "jwks-rsa"
-import { sendOathkeeperRequestGraphql } from "@services/oathkeeper"
-import { UsersRepository } from "@services/mongoose"
-import { validateKratosCookie } from "@services/kratos"
-import { checkedToUserId } from "@domain/accounts"
-import { CouldNotFindAccountFromKratosIdError } from "@domain/errors"
-import { ValidationError } from "@domain/shared"
+} from "subscriptions-transport-ws";
+import { WebSocketServer } from "ws";
+import { AuthenticationError, AuthorizationError } from "@graphql/error";
+import { mapError } from "@graphql/error-map";
+import { parseIps } from "@domain/accounts-ips";
+import {
+  fieldExtensionsEstimator,
+  simpleEstimator,
+} from "graphql-query-complexity";
+import { createComplexityPlugin } from "graphql-query-complexity-apollo-plugin";
+import jwksRsa from "jwks-rsa";
+import { sendOathkeeperRequestGraphql } from "@services/oathkeeper";
+import { UsersRepository } from "@services/mongoose";
+import { validateKratosCookie } from "@services/kratos";
+import { checkedToUserId } from "@domain/accounts";
+import { CouldNotFindAccountFromKratosIdError } from "@domain/errors";
+import { ValidationError } from "@domain/shared";
 
-import { redis } from "../redis" // Import the redis instance from the main project
+import { redis } from "../redis"; // Import the redis instance from the main project
 
-import { playgroundTabs } from "../../graphql/playground"
-import authRouter from "../../servers/middlewares/auth-router"
-import healthzHandler from "../../servers/middlewares/healthz"
-import kratosRouter from "../../servers/middlewares/kratos-router"
+import { playgroundTabs } from "../../graphql/playground";
+import authRouter from "../../servers/middlewares/auth-router";
+import healthzHandler from "../../servers/middlewares/healthz";
+import kratosRouter from "../../servers/middlewares/kratos-router";
 
-import typeDefs from "./typeDefs"
-import resolvers from "./resolvers"
-import { AuthenticationAPI, ExternalWalletAPI, BaseAPI } from "./datasources"
+import typeDefs from "./typeDefs";
+import resolvers from "./resolvers";
+import { AuthenticationAPI, ExternalWalletAPI, BaseAPI } from "./datasources";
 
 const graphqlLogger = baseLogger.child({
   module: "graphql",
-})
+});
 
-const apolloConfig = getApolloConfig()
-const baseAPI = new BaseAPI(redis) // Pass the Redis instance
-const authenticationAPI = new AuthenticationAPI(redis)
-const externalWalletAPI = new ExternalWalletAPI(baseAPI)
+const apolloConfig = getApolloConfig();
+const baseAPI = new BaseAPI(redis); // Pass the Redis instance
+const authenticationAPI = new AuthenticationAPI(redis);
+const externalWalletAPI = new ExternalWalletAPI(baseAPI);
 
 export const isAuthenticated = rule({ cache: "contextual" })(
   (parent, args, ctx: GraphQLContext) => {
-    return !!ctx.domainAccount || new AuthenticationError({ logger: baseLogger })
-  },
-)
+    return (
+      !!ctx.domainAccount || new AuthenticationError({ logger: baseLogger })
+    );
+  }
+);
 
 export const isEditor = rule({ cache: "contextual" })(
   (parent, args, ctx: GraphQLContextAuth) => {
     return ctx.domainAccount.isEditor
       ? true
-      : new AuthorizationError({ logger: baseLogger })
-  },
-)
+      : new AuthorizationError({ logger: baseLogger });
+  }
+);
 
-const jwtAlgorithms: jsonwebtoken.Algorithm[] = ["RS256"]
+const jwtAlgorithms: jsonwebtoken.Algorithm[] = ["RS256"];
 
-const geeTestConfig = getGeetestConfig()
-const geetest = Geetest(geeTestConfig)
+const geeTestConfig = getGeetestConfig();
+const geetest = Geetest(geeTestConfig);
 
-type RequestWithGqlContext = Request & { gqlContext: GraphQLContext | undefined }
+type RequestWithGqlContext = Request & {
+  gqlContext: GraphQLContext | undefined;
+};
 
 const setGqlContext = async (
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ): Promise<void> => {
-  const tokenPayload = req.token
-  const body = req.body ?? null
+  const tokenPayload = req.token;
+  const body = req.body ?? null;
 
   const ipString = isProd
     ? req.headers["x-real-ip"] || req.headers["x-forwarded-for"]
-    : req.ip
+    : req.ip;
 
-  const ip = parseIps(ipString)
-  const userAgent = req.headers["user-agent"] || "unknown"
+  const ip = parseIps(ipString);
+  const userAgent = req.headers["user-agent"] || "unknown";
 
   const gqlContext = await sessionContext({
     tokenPayload,
     ip,
     body,
-  })
+  });
 
-  const reqWithGqlContext = req as RequestWithGqlContext
-  reqWithGqlContext.gqlContext = gqlContext
+  const reqWithGqlContext = req as RequestWithGqlContext;
+  reqWithGqlContext.gqlContext = gqlContext;
 
   addAttributesToCurrentSpanAndPropagate(
     {
       [SemanticAttributes.HTTP_CLIENT_IP]: ip,
       [SemanticAttributes.HTTP_USER_AGENT]: req.headers["user-agent"],
       [ACCOUNT_USERNAME]: gqlContext.domainAccount?.username,
-      [SemanticAttributes.ENDUSER_ID]: gqlContext.domainAccount?.id || tokenPayload?.sub,
+      [SemanticAttributes.ENDUSER_ID]:
+        gqlContext.domainAccount?.id || tokenPayload?.sub,
     },
     () => {
-      const parentContext = context.active()
+      const parentContext = context.active();
       const ipContext = propagation.setBaggage(
         parentContext,
         propagation.createBaggage({
           [SemanticAttributes.HTTP_CLIENT_IP]: { value: ip || "unknown" },
           [SemanticAttributes.HTTP_USER_AGENT]: { value: userAgent },
-        }),
-      )
+        })
+      );
 
-      context.with(ipContext, next)
-    },
-  )
-}
+      context.with(ipContext, next);
+    }
+  );
+};
 
 export const sessionContext = ({
   tokenPayload,
   ip,
   body,
 }: {
-  tokenPayload: jsonwebtoken.JwtPayload
-  ip: IpAddress | undefined
-  body: unknown
+  tokenPayload: jsonwebtoken.JwtPayload;
+  ip: IpAddress | undefined;
+  body: unknown;
 }): Promise<GraphQLContext> => {
-  const logger = graphqlLogger.child({ tokenPayload, body })
+  const logger = graphqlLogger.child({ tokenPayload, body });
 
-  let domainAccount: Account | undefined
-  let user: User | undefined
+  let domainAccount: Account | undefined;
+  let user: User | undefined;
   return addAttributesToCurrentSpanAndPropagate(
     {
       "token.sub": tokenPayload?.sub,
@@ -164,51 +172,55 @@ export const sessionContext = ({
     async () => {
       // note: value should match (ie: "anon") if not an accountId
       // settings from dev/ory/oathkeeper.yml/authenticator/anonymous/config/subjet
-      const maybeUserId = checkedToUserId(tokenPayload?.sub ?? "")
+      const maybeUserId = checkedToUserId(tokenPayload?.sub ?? "");
 
       if (!(maybeUserId instanceof ValidationError)) {
-        const userId = maybeUserId
-        const account = await Accounts.getAccountFromUserId(userId)
+        const userId = maybeUserId;
+        const account = await Accounts.getAccountFromUserId(userId);
         if (account instanceof CouldNotFindAccountFromKratosIdError) {
           // do nothing, the jwt is valid but the account does not exist
           // TODO: refactor to remove https://github.com/GaloyMoney/galoy/pull/2071/files#diff-2a3744191b13e4b2375d4bc44df6706cd453f9b3ccbf3970f801ad4ce97219aaR16
           // or of the graphql in a rest endoing.
           // more context: https://github.com/GaloyMoney/galoy/pull/2071/files#r1214595029
         } else if (account instanceof Error) {
-          throw mapError(account)
+          throw mapError(account);
         } else {
-          domainAccount = account
+          domainAccount = account;
           // not awaiting on purpose. just updating metadata
           // TODO: look if this can be a source of memory leaks
           Accounts.updateAccountIPsInfo({
             accountId: account.id,
             ip,
             logger,
-          })
-          const userRes = await UsersRepository().findById(account.kratosUserId)
-          if (userRes instanceof Error) throw mapError(userRes)
-          user = userRes
-          addAttributesToCurrentSpan({ [ACCOUNT_USERNAME]: domainAccount?.username })
+          });
+          const userRes = await UsersRepository().findById(
+            account.kratosUserId
+          );
+          if (userRes instanceof Error) throw mapError(userRes);
+          user = userRes;
+          addAttributesToCurrentSpan({
+            [ACCOUNT_USERNAME]: domainAccount?.username,
+          });
         }
       }
 
       const loaders = {
         txnMetadata: new DataLoader(async (keys) => {
           const txnMetadata = await Transactions.getTransactionsMetadataByIds(
-            keys as LedgerTransactionId[],
-          )
+            keys as LedgerTransactionId[]
+          );
           if (txnMetadata instanceof Error) {
             recordExceptionInCurrentSpan({
               error: txnMetadata,
               level: txnMetadata.level,
-            })
+            });
 
-            return keys.map(() => undefined)
+            return keys.map(() => undefined);
           }
 
-          return txnMetadata
+          return txnMetadata;
         }),
-      }
+      };
 
       return {
         logger,
@@ -218,10 +230,10 @@ export const sessionContext = ({
         domainAccount,
         geetest,
         ip,
-      }
-    },
-  )
-}
+      };
+    }
+  );
+};
 
 export const startIbexServer = async ({
   schema,
@@ -229,22 +241,25 @@ export const startIbexServer = async ({
   startSubscriptionServer = false,
   type,
 }: {
-  schema: GraphQLSchema
-  port: string | number
-  startSubscriptionServer?: boolean
-  type: string
+  schema: GraphQLSchema;
+  port: string | number;
+  startSubscriptionServer?: boolean;
+  type: string;
 }): Promise<Record<string, unknown>> => {
-  const app = express()
-  const httpServer = createServer(app)
-  httpServer.keepAliveTimeout = GALOY_API_KEEPALIVE_TIMEOUT_MS
+  const app = express();
+  const httpServer = createServer(app);
+  httpServer.keepAliveTimeout = GALOY_API_KEEPALIVE_TIMEOUT_MS;
   const apolloPlugins = [
     createComplexityPlugin({
       schema,
-      estimators: [fieldExtensionsEstimator(), simpleEstimator({ defaultComplexity: 1 })],
+      estimators: [
+        fieldExtensionsEstimator(),
+        simpleEstimator({ defaultComplexity: 1 }),
+      ],
       maximumComplexity: 200,
       onComplete: (complexity) => {
         // TODO(telemetry): add complexity value to span
-        baseLogger.debug({ complexity }, "queryComplexity")
+        baseLogger.debug({ complexity }, "queryComplexity");
       },
     }),
     ApolloServerPluginDrainHttpServer({ httpServer }),
@@ -259,7 +274,7 @@ export const startIbexServer = async ({
           ],
         })
       : ApolloServerPluginLandingPageDisabled(),
-  ]
+  ];
 
   const ibexServer = new ApolloServer({
     typeDefs,
@@ -268,7 +283,7 @@ export const startIbexServer = async ({
     introspection: apolloConfig.playground,
     plugins: apolloPlugins,
     context: (context) => {
-      return (context.req as RequestWithGqlContext).gqlContext
+      return (context.req as RequestWithGqlContext).gqlContext;
     },
     dataSources: () => ({
       authenticationAPI,
@@ -278,29 +293,31 @@ export const startIbexServer = async ({
     formatError: (err) => {
       try {
         const reportErrorToClient =
-          err instanceof ApolloError || err instanceof GraphQLError
+          err instanceof ApolloError || err instanceof GraphQLError;
 
         const reportedError = {
           message: err.message,
           locations: err.locations,
           path: err.path,
           code: err.extensions?.code,
-        }
+        };
 
         return reportErrorToClient
           ? reportedError
-          : { message: `Error processing GraphQL request ${reportedError.code}` }
+          : {
+              message: `Error processing GraphQL request ${reportedError.code}`,
+            };
       } catch (err) {
-        throw mapError(err)
+        throw mapError(err);
       }
     },
-  })
+  });
 
-  app.use("/auth", authRouter)
-  app.use("/kratos", kratosRouter)
+  app.use("/auth", authRouter);
+  app.use("/kratos", kratosRouter);
 
   // Add helmet middleware
-  const enablePolicy = apolloConfig.playground ? false : undefined
+  const enablePolicy = apolloConfig.playground ? false : undefined;
 
   app.use(
     helmet({
@@ -308,8 +325,8 @@ export const startIbexServer = async ({
       crossOriginOpenerPolicy: enablePolicy,
       crossOriginResourcePolicy: enablePolicy,
       contentSecurityPolicy: enablePolicy,
-    }),
-  )
+    })
+  );
 
   // Health check
   app.get(
@@ -319,8 +336,8 @@ export const startIbexServer = async ({
       checkRedisStatus: true,
       checkLndsStatus: false,
       checkBriaStatus: false,
-    }),
-  )
+    })
+  );
 
   app.use(
     PinoHttp({
@@ -329,10 +346,10 @@ export const startIbexServer = async ({
       customProps: (req) => {
         /* eslint @typescript-eslint/ban-ts-comment: "off" */
         // @ts-ignore-next-line no-implicit-any error
-        const account = req["gqlContext"]?.domainAccount
+        const account = req["gqlContext"]?.domainAccount;
         return {
           // @ts-ignore-next-line no-implicit-any error
-          "body": req["body"],
+          body: req["body"],
           // @ts-ignore-next-line no-implicit-any error
           "token.sub": req["token"]?.sub,
           // @ts-ignore-next-line no-implicit-any error
@@ -346,7 +363,7 @@ export const startIbexServer = async ({
             status: account?.status,
             displayCurrency: account?.displayCurrency,
           },
-        }
+        };
       },
       autoLogging: {
         ignore: (req) => req.url === "/healthz",
@@ -361,10 +378,10 @@ export const startIbexServer = async ({
           // headers: req.headers,
         }),
       },
-    }),
-  )
+    })
+  );
 
-  const secret = jwksRsa.expressJwtSecret(getJwksArgs()) as GetVerificationKey // https://github.com/auth0/express-jwt/issues/288#issuecomment-1122524366
+  const secret = jwksRsa.expressJwtSecret(getJwksArgs()) as GetVerificationKey; // https://github.com/auth0/express-jwt/issues/288#issuecomment-1122524366
 
   app.use(
     "/graphql",
@@ -374,63 +391,62 @@ export const startIbexServer = async ({
       credentialsRequired: true,
       requestProperty: "token",
       issuer: "galoy.io",
-    }),
-  )
+    })
+  );
 
-  app.use("/graphql", setGqlContext)
+  app.use("/graphql", setGqlContext);
 
-  await ibexServer.start()
+  await ibexServer.start();
 
   ibexServer.applyMiddleware({
     app,
     path: "/graphql",
     cors: { credentials: true, origin: true },
-  })
+  });
 
   // old legacy ws
   const onConnectLegacy = async (
     connectionParams: Record<string, unknown>,
     webSocket: unknown,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    connectionContext: any,
+    connectionContext: any
   ) => {
-    const { request } = connectionContext
+    const { request } = connectionContext;
 
-    const authz = (connectionParams.authorization || connectionParams.Authorization) as
-      | string
-      | undefined
+    const authz = (connectionParams.authorization ||
+      connectionParams.Authorization) as string | undefined;
 
     // TODO: also manage the case where there is a cookie in the request
     // https://www.ory.sh/docs/oathkeeper/guides/proxy-websockets#configure-ory-oathkeeper-and-ory-kratos
-    const cookies = request.headers.cookie
+    const cookies = request.headers.cookie;
     if (cookies?.includes("ory_kratos_session")) {
-      const kratosCookieRes = await validateKratosCookie(cookies)
-      if (kratosCookieRes instanceof Error) return kratosCookieRes
+      const kratosCookieRes = await validateKratosCookie(cookies);
+      if (kratosCookieRes instanceof Error) return kratosCookieRes;
       const tokenPayload = {
         sub: kratosCookieRes.kratosUserId,
-      }
+      };
       return sessionContext({
         tokenPayload,
         ip: request?.socket?.remoteAddress,
         body: null,
-      })
+      });
     }
 
     // make request to oathkeeper
-    const originalToken = authz?.slice(7) as SessionToken | undefined
+    const originalToken = authz?.slice(7) as SessionToken | undefined;
 
-    const newToken = await sendOathkeeperRequestGraphql(originalToken)
+    const newToken = await sendOathkeeperRequestGraphql(originalToken);
     // TODO: see how returning an error affect the websocket connection
-    if (newToken instanceof Error) return newToken
+    if (newToken instanceof Error) return newToken;
 
-    const keyJwks = await jwksRsa(getJwksArgs()).getSigningKey()
+    const keyJwks = await jwksRsa(getJwksArgs()).getSigningKey();
 
     const tokenPayload = jsonwebtoken.verify(newToken, keyJwks.getPublicKey(), {
       algorithms: jwtAlgorithms,
-    })
+    });
 
     if (typeof tokenPayload === "string") {
-      throw new Error("tokenPayload should be an object")
+      throw new Error("tokenPayload should be an object");
     }
 
     return sessionContext({
@@ -439,23 +455,23 @@ export const startIbexServer = async ({
 
       // TODO: Resolve what's needed here
       body: null,
-    })
-  }
+    });
+  };
 
   // new ws server
   const getContext = async (ctx: Context) => {
-    const connectionParams = ctx.connectionParams
+    const connectionParams = ctx.connectionParams;
 
     // TODO: check if nginx pass the ip to the header
     // TODO: ip not been used currently for subscription.
     // implement some rate limiting.
     const ipString = isProd
       ? connectionParams?.["x-real-ip"] || connectionParams?.["x-forwarded-for"]
-      : connectionParams?.ip
+      : connectionParams?.ip;
 
-    const ip = parseIps(ipString)
+    const ip = parseIps(ipString);
 
-    const authz = connectionParams?.Authorization as string | undefined
+    const authz = connectionParams?.Authorization as string | undefined;
 
     // TODO: also manage the case where there is a cookie in the request
     // https://www.ory.sh/docs/oathkeeper/guides/proxy-websockets#configure-ory-oathkeeper-and-ory-kratos
@@ -473,22 +489,22 @@ export const startIbexServer = async ({
     //   })
     // }
 
-    const kratosToken = authz?.slice(7) as SessionToken
+    const kratosToken = authz?.slice(7) as SessionToken;
 
     // make request to oathkeeper
     // if the kratosToken is undefined, then oathkeeper will create a subject with "anon"
-    const jwtToken = await sendOathkeeperRequestGraphql(kratosToken)
+    const jwtToken = await sendOathkeeperRequestGraphql(kratosToken);
     // TODO: see how returning an error affect the websocket connection
-    if (jwtToken instanceof Error) return jwtToken
+    if (jwtToken instanceof Error) return jwtToken;
 
-    const keyJwks = await jwksRsa(getJwksArgs()).getSigningKey()
+    const keyJwks = await jwksRsa(getJwksArgs()).getSigningKey();
 
     const tokenPayload = jsonwebtoken.verify(jwtToken, keyJwks.getPublicKey(), {
       algorithms: jwtAlgorithms,
-    })
+    });
 
     if (typeof tokenPayload === "string") {
-      return false
+      return false;
     }
 
     return sessionContext({
@@ -497,20 +513,20 @@ export const startIbexServer = async ({
 
       // TODO: Resolve what's needed here
       body: null,
-    })
-  }
+    });
+  };
 
   // from https://github.com/enisdenjo/graphql-ws/issues/36#issuecomment-715285764
   // TODO: this cache is naive. it doesn't have security implication because currently the websocket
   // is only receiving data, but if the token is revoked, it should not longer be be able to receive data.
   // authorizedContexts is currently only be flushed on server restart.
   // this could also have a memory leak if the server is never restarted and have lot of entities
-  const authorizedContexts: Record<string, unknown> = {}
+  const authorizedContexts: Record<string, unknown> = {};
 
   return new Promise((resolve, reject) => {
     httpServer.listen({ port }, () => {
       if (startSubscriptionServer) {
-        const graphqlWs = new WebSocketServer({ noServer: true })
+        const graphqlWs = new WebSocketServer({ noServer: true });
         const serverCleanup = useServer(
           {
             schema,
@@ -519,17 +535,17 @@ export const startIbexServer = async ({
             onConnect: async (ctx) => {
               // TODO: integrate open telemetry
               if (typeof ctx.connectionParams?.Authorization !== "string") {
-                return true // anon connection ?
+                return true; // anon connection ?
               }
 
-              const context = await getContext(ctx)
-              authorizedContexts[ctx.connectionParams.Authorization] = context
-              return true
+              const context = await getContext(ctx);
+              authorizedContexts[ctx.connectionParams.Authorization] = context;
+              return true;
             },
             context: (ctx) => {
               // TODO: integrate open telemetry
               if (typeof ctx.connectionParams?.Authorization === "string") {
-                return authorizedContexts[ctx.connectionParams?.Authorization]
+                return authorizedContexts[ctx.connectionParams?.Authorization];
               }
             },
             onSubscribe: () => {
@@ -537,10 +553,10 @@ export const startIbexServer = async ({
               // TODO: integrate open telemetry
             },
           },
-          graphqlWs,
-        )
+          graphqlWs
+        );
 
-        const subTransWs = new WebSocketServer({ noServer: true })
+        const subTransWs = new WebSocketServer({ noServer: true });
         const apolloSubscriptionServer = SubscriptionServer.create(
           {
             execute: execute as unknown as ExecuteFunction,
@@ -548,21 +564,21 @@ export const startIbexServer = async ({
             schema,
             onConnect: onConnectLegacy,
           },
-          subTransWs,
-        )
-        ;["SIGINT", "SIGTERM"].forEach((signal) => {
+          subTransWs
+        );
+        ["SIGINT", "SIGTERM"].forEach((signal) => {
           process.on(signal, () => {
-            apolloSubscriptionServer.close()
-            serverCleanup.dispose()
-          })
-        })
+            apolloSubscriptionServer.close();
+            serverCleanup.dispose();
+          });
+        });
 
         httpServer.on("upgrade", (req, socket, head) => {
           // extract websocket subprotocol from header
-          const protocol = req.headers["sec-websocket-protocol"]
+          const protocol = req.headers["sec-websocket-protocol"];
           const protocols = Array.isArray(protocol)
             ? protocol
-            : protocol?.split(",").map((p) => p.trim())
+            : protocol?.split(",").map((p) => p.trim());
 
           // decide which websocket server to use
           const wss =
@@ -572,16 +588,16 @@ export const startIbexServer = async ({
               : // graphql-ws will welcome its own subprotocol and
                 // gracefully reject invalid ones. if the client supports
                 // both transports, graphql-ws will prevail
-                graphqlWs
+                graphqlWs;
           wss.handleUpgrade(req, socket, head, (ws) => {
-            wss.emit("connection", ws, req)
-          })
-        })
+            wss.emit("connection", ws, req);
+          });
+        });
       }
 
       console.log(
-        `🚀 "${type}" server ready at http://localhost:${port}${ibexServer.graphqlPath}`,
-      )
+        `🚀 "${type}" server ready at http://localhost:${port}${ibexServer.graphqlPath}`
+      );
 
       if (!isProd) {
         console.log(
@@ -589,16 +605,16 @@ export const startIbexServer = async ({
             type === "admin"
               ? "http://localhost:4002/admin/graphql"
               : "http://localhost:4002/ibex/graphql"
-          }`,
-        )
+          }`
+        );
       }
 
-      resolve({ app, httpServer, ibexServer })
-    })
+      resolve({ app, httpServer, ibexServer });
+    });
 
     httpServer.on("error", (err) => {
-      console.error(err)
-      reject(err)
-    })
-  })
-}
+      console.error(err);
+      reject(err);
+    });
+  });
+};
