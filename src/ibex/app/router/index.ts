@@ -7,6 +7,8 @@ import currencyRouter from '@ibex/app/router/currency';
 import onchainRouter from '@ibex/app/router/onchain';
 
 
+import lnurlRouter from '@ibex/app/router/lnurlpay';
+
 const router: Router = express.Router();
 
 router.use('/account', accountRoutes);
@@ -15,5 +17,9 @@ router.use('/lightningInvoice', lightningInvoiceRouter);
 router.use('/lightningPayment', lightningPaymentRouter);
 router.use('/currency', currencyRouter);
 router.use('/onchain', onchainRouter);
+
+
+
+router.use('/lnurl', lnurlRouter);
 
 export default router;
