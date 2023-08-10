@@ -7,6 +7,7 @@ const router: Router = express.Router();
 router.post('/', ibexAuthMiddleWare, createLNURLHandler);
 router.get('/invoiceRequirement', ibexAuthMiddleWare,  invoiceRequirementHandler);
 router.get('/pay',  payInvoiceHandler);
+router.get('/decodeLNURL',  decodeLNURLHandler);
 
 
 export default router;
