@@ -1,6 +1,6 @@
 import express, { Router } from 'express';
 import ibexAuthMiddleWare from '@ibex/app/middleware';
-import { createLNURLHandler, invoiceRequirementHandler, payInvoiceHandler} from '../controller/lnurlpay';
+import { createLNURLHandler, invoiceRequirementHandler, payInvoiceHandler, decodeLNURLHandler} from '../controller/lnurlpay';
 
 const router: Router = express.Router();
 
