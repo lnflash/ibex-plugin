@@ -59,4 +59,19 @@ async function payInvoiceHandler(req: Request, res: Response): Promise<void> {
     }
 }
 
-export { createLNURLHandler, invoiceRequirementHandler, payInvoiceHandler }
+async function decodeLNURLHandler(req: Request, res: Response): Promise<void> {
+    const token = getToken(req, res);
+    try {
+        const { lnurl } = req.query;
+        const response: AxiosResponse<{ pr:string, routes: string[] }> = await axios.get(`${IBEXEnum.BASE_URL}lnurl/decode/lnurl`, {
+            headers: { Authorization: token },
+            params: { lnurl }
+        });
+
+        res.status(200).json({ data: response.data });
+    }  catch (error: any) {
+        res.status(error.response?.status || 500).json({ error: error.response?.data?.error || "Internal Server Error" });
+    }
+}
+
+export { createLNURLHandler, invoiceRequirementHandler, payInvoiceHandler, decodeLNURLHandler }
