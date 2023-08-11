@@ -63,9 +63,8 @@ async function decodeLNURLHandler(req: Request, res: Response): Promise<void> {
     const token = getToken(req, res);
     try {
         const { lnurl } = req.query;
-        const response: AxiosResponse<{ pr:string, routes: string[] }> = await axios.get(`${IBEXEnum.BASE_URL}lnurl/decode/lnurl`, {
+        const response: AxiosResponse<{ pr:string, routes: string[] }> = await axios.get(`${IBEXEnum.BASE_URL}lnurl/decode/${lnurl}`, {
             headers: { Authorization: token },
-            params: { lnurl }
         });
 
         res.status(200).json({ data: response.data });
