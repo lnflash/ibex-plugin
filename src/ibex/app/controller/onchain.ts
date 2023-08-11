@@ -19,6 +19,8 @@ async function createBitcoinAddressHandler(req: Request, res: Response): Promise
         await insertAddress(accountId, response.data.address);
         res.status(201).json({ message: 'Address created successfully', data: response.data.address });
     } catch (error: any) {
+        console.log({error});
+        
         res.status(error.response?.status || 500).json({ error: error.response?.data?.error || "Internal Server Error" });
     }
 }
@@ -30,6 +32,8 @@ async function estimateFee(token: string | undefined, address: string, amount: n
         });
         return response.data.feeSat;
     } catch (error) {
+        console.log({error});
+
         throw error;
     }
 }
@@ -46,6 +50,8 @@ async function estimateFeeHandler(req: Request, res: Response): Promise<void> {
         const feeSat = await estimateFee(token, address, +amount);
         res.status(200).json({ data: feeSat });
     } catch (error: any) {
+        console.log({error});
+
         res.status(error.response?.status || 500).json({ error: error.response?.data?.error || "Internal Server Error" });
     }
 }
@@ -69,6 +75,8 @@ async function sendStatsToBitcoinHandler(req: Request, res: Response): Promise<v
         res.status(200).json({ data: response.data });
 
     } catch (error: any) {
+        console.log({error});
+
         res.status(error.response?.status || 500).json({ error: error.response?.data?.error || "Internal Server Error" });
     }
 }
@@ -84,6 +92,8 @@ async function getTransactionDetails(req: Request, res: Response): Promise<void>
         });
         res.status(200).json({ data: response.data });
     } catch (error: any) {
+        console.log({error});
+
         res.status(error.response?.status || 500).json({ error: error.response?.data?.error || "Internal Server Error" });
     }
 
@@ -101,6 +111,8 @@ async function receiveFundsWebhookHandler(req: Request, res: Response): Promise<
             res.status(401).send({ error: 'Invalid Secret' });
         }
     } catch (error: any) {
+        console.log({error});
+
         res.status(error.response?.status || 500).json({ error: error.response?.data?.error || "Internal Server Error" });
     }
 }
