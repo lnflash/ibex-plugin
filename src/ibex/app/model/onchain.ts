@@ -1,5 +1,6 @@
 
 import { db } from '@ibex/knex';
+import {v4 as uuidv4} from 'uuid';
 
 const ADDRESS_TABLE_NAME = 'ibex_onchain_address';
 
@@ -99,12 +100,12 @@ const createTransactionTable = () => {
 
 async function insertAddress(accountId: string, address: string) {
     await createAddressTable();
-    return db(ADDRESS_TABLE_NAME).insert({ id: crypto.randomUUID(), accountId, address });
+    return db(ADDRESS_TABLE_NAME).insert({ id: uuidv4(), accountId, address });
 }
 
 async function insertTransaction(accountId: string, address: string, body: IbexOnchainTransaction) {
     await createTransactionTable();
-    return db(TRANSACTION_TABLE_NAME).insert({ id: crypto.randomUUID(), accountId, address, ...body });
+    return db(TRANSACTION_TABLE_NAME).insert({ id: uuidv4(), accountId, address, ...body });
 }
 
 export { IbexOnchainTransaction, IbexOnchainTransactionWebhookPayload, insertAddress, insertTransaction }

@@ -1,5 +1,5 @@
 import { db } from "@ibex/knex";
-
+import {v4 as uuidv4} from 'uuid';
 
 const TABLE_NAME = 'ibex_lnurl'
 
@@ -47,7 +47,7 @@ const createLNURLTable = () => {
 
 async function insertLNURL(body: IbexLNURL): Promise<void> {
     await createLNURLTable();
-    return db(TABLE_NAME).insert({ id: crypto.randomUUID(), ...body });
+    return db(TABLE_NAME).insert({ id: uuidv4(), ...body });
 }
 
 export { insertLNURL }

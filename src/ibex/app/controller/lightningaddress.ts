@@ -23,6 +23,8 @@ async function createLightningAddressHandler(req: Request, res: Response): Promi
         await createLightningAddress(response.data);
         res.status(201).json({ message: 'Lightning address created successfully', data: response.data });
     } catch (error: any) {
+        console.log({error});
+        
         res.status(error.response?.status || 500).json({ error: error.response?.data?.error || "Internal Server Error" });
     }
 }

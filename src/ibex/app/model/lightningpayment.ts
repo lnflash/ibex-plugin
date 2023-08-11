@@ -1,5 +1,6 @@
 import { db } from '@ibex/knex';
 import { Invoice } from './lightninginvoice';
+import {v4 as uuidv4} from 'uuid';
 
 const TABLE_NAME = 'ibex_lightning_payment';
 
@@ -108,7 +109,7 @@ export const createTable = () => {
 
 async function insertPaymentInfoHandler(data: IbexPayInvoice): Promise<number> {
     await createTable();
-    return db(TABLE_NAME).insert({ id: crypto.randomUUID(), ...data });
+    return db(TABLE_NAME).insert({ id: uuidv4(), ...data });
 }
 
 export { IbexPayInvoice, IbexPayInvoiceWebhookPayload, insertPaymentInfoHandler }
