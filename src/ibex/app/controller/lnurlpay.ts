@@ -59,6 +59,27 @@ async function payInvoiceHandler(req: Request, res: Response): Promise<void> {
     }
 }
 
+async function paylnurlHandler(req: Request, res: Response): Promise<void> {
+    const token = getToken(req, res);
+    try {
+
+        const { params, amount, accountId } = req.body;
+
+        if (!((typeof amount === "number" || amount == undefined) && typeof accountId === "string")) {
+            res.status(400).json({ error: "Invalid request body" });
+            return;
+        }
+
+        const response: AxiosResponse<{ lnurl: string }> = await axios.post(`${IBEXEnum.BASE_URL}v2/lnurl/pay/send`, { params, amount, accountId }, {
+            headers: { Authorization: token },
+        });
+
+        res.status(201).json({ message: 'Pay LNURL compleated successfully', data: response.data });
+    }  catch (error: any) {
+        res.status(error.response?.status || 500).json({ error: error.response?.data?.error || "Internal Server Error" });
+    }
+}
+
 async function decodeLNURLHandler(req: Request, res: Response): Promise<void> {
     const token = getToken(req, res);
     try {
@@ -73,4 +94,4 @@ async function decodeLNURLHandler(req: Request, res: Response): Promise<void> {
     }
 }
 
-export { createLNURLHandler, invoiceRequirementHandler, payInvoiceHandler, decodeLNURLHandler }
+export { createLNURLHandler, invoiceRequirementHandler, payInvoiceHandler, paylnurlHandler, decodeLNURLHandler }
