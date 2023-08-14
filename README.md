@@ -4,6 +4,10 @@
 This open-source project is an add-on to the [galoy](https://github.com/GaloyMoney/galoy) instance. 
 The goal is to have a modular addition to the galoy backend, so that a frontend application can have the option of using a custodial BTC or USD wallet from the IBEX API.
 
+## How to use
+
+Check out the [setup documenation here](./src/ibex/README.md)
+
 ## TODO:
 - [ ] Complete initial devleopment of API, Resolvers, GraphQL Schema, MongoDB Documents, Redis, and Apollo Server 
 - [ ] Unit test and create mock data
