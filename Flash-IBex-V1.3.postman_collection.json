@@ -1,0 +1,796 @@
+{
+	"info": {
+		"_postman_id": "8f6b5c2a-f3dd-46b6-9a3b-3a248f0b1941",
+		"name": "Flash-IBex-V1.3",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3977132"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "SIgnin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"mail2michaelennis@gmail.com\",\n  \"password\": \"Flash2023$\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://ibexhub.ibexmercado.com/auth/signin",
+							"protocol": "https",
+							"host": [
+								"ibexhub",
+								"ibexmercado",
+								"com"
+							],
+							"path": [
+								"auth",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Account",
+			"item": [
+				{
+					"name": "Get All Account",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODk2OTkwMjcsIklEIjoiIiwiVHlwZSI6ImFjY2VzcyIsIlVzZXJJRCI6IjFkZDcxZmZhLTUxOGUtNDJjZS05ZGVkLWZlMjU0YzliNDRiYiIsIlBlcm1pc3Npb25zIjpudWxsLCJQb29sIjoiSUJFWF9IVUIifQ.pNV6SEEHHa8w0zTXjRVmipZNSoTutyTKg40jB7TsaVITRm8c9B8IBB0hRBA-fjbD-qyylx03Esjmetg4y_HZn5Lr3wrQhQ8ClgIjYO4w2tpWiz5mWu08X2ddqTPeLXc-xKbWsuJz6GF6Xrs4yuEskidaEOmHys_1bWV8AFqCzAEySY6u82Ci-fbszIS2VvsyggcFQ4AU4CVZBinbiDpP3y4VpRXiQIYZGdVjJVgdVHrEtzlNlfpU9zVNoknRXXS-sYu74O9TVHjkt6YUrUWRJMz5aLEFTlalGotdOWh00g6YB8BFvWhMku_w4k0zAGtriCln9wvlMybi9g_gtAnmLufhjodERLo4BA3UYc8Nl9p-smTOIr-AgpB61LeHyJgx3XPgnAov_F48nv6uBo2GpMbdkK7iVEfEs6XpSiy3KbchcqF-HI12kPw3icP8VyDHFDhUN0v9TSkhULJJTLJ97i93NaNPR-nT35B_kvT1LZkZO8yL8XQh6z64c9f4NrUQo0r_nokBAi6IGwpetEwAT6TeSqrTSMlnXTMawwttWotFrGT9jtUYVk7S0YPs2E1mCf2QTXK2MzEuTvgaxeclmjHkChmwPZHPfKNHT8JaGZ8a96gNNndm7vZYsmDAdCTLE-AHFiEqH3fcIavSSRlJ-re3pFpCfFjSEzptdpHjmYE"
+							}
+						],
+						"url": {
+							"raw": "https://ibex-plugin-islandbitcoin.replit.app/api/v1/account",
+							"protocol": "https",
+							"host": [
+								"ibex-plugin-islandbitcoin",
+								"replit",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"account"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Account",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"PurkeTest2\",\n  \"currencyId\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://ibex-plugin-islandbitcoin.replit.app/api/v1/account",
+							"protocol": "https",
+							"host": [
+								"ibex-plugin-islandbitcoin",
+								"replit",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"account"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"PurkeTest1Update\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://ibex-plugin-islandbitcoin.replit.app/api/v1/account/4b345a2c-093a-4b5a-b4ab-80313413859c",
+							"protocol": "https",
+							"host": [
+								"ibex-plugin-islandbitcoin",
+								"replit",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"account",
+								"4b345a2c-093a-4b5a-b4ab-80313413859c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://ibex-plugin-islandbitcoin.replit.app/api/v1/account/4b345a2c-093a-4b5a-b4ab-80313413859c",
+							"protocol": "https",
+							"host": [
+								"ibex-plugin-islandbitcoin",
+								"replit",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"account",
+								"4b345a2c-093a-4b5a-b4ab-80313413859c"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Lightning Address",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"accountId\": \"4b345a2c-093a-4b5a-b4ab-80313413859c\",\n  \"username\": \"PurkeTest1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://ibex-plugin-islandbitcoin.replit.app/api/v1/lightningAddress",
+							"protocol": "https",
+							"host": [
+								"ibex-plugin-islandbitcoin",
+								"replit",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"lightningAddress"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Account",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://ibex-plugin-islandbitcoin.replit.app/api/v1/lightningAddress/4b345a2c-093a-4b5a-b4ab-80313413859c",
+							"protocol": "https",
+							"host": [
+								"ibex-plugin-islandbitcoin",
+								"replit",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"lightningAddress",
+								"4b345a2c-093a-4b5a-b4ab-80313413859c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"PurkeTest2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://ibex-plugin-islandbitcoin.replit.app/api/v1/lightningAddress/7a2e45bf-0c57-4305-ab1b-47a66ec474fb",
+							"protocol": "https",
+							"host": [
+								"ibex-plugin-islandbitcoin",
+								"replit",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"lightningAddress",
+								"7a2e45bf-0c57-4305-ab1b-47a66ec474fb"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/v1/lightningAddress/94edb42b-b9a8-46d1-9e95-04392c60bad6",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"v1",
+								"lightningAddress",
+								"94edb42b-b9a8-46d1-9e95-04392c60bad6"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Lightning Invoice",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyMjI2NzksIklEIjoiIiwiVHlwZSI6ImFjY2VzcyIsIlVzZXJJRCI6IjFkZDcxZmZhLTUxOGUtNDJjZS05ZGVkLWZlMjU0YzliNDRiYiIsIlBlcm1pc3Npb25zIjpudWxsLCJQb29sIjoiSUJFWF9IVUIifQ.fXl9EUV_R9QZf2o-oARXBdWmo3N_h4TQR3P8Wktka8oPUKvWMdeJIaB1GSwwf1QfordedwOarbU9CQJ8NRCP_qh6_iTjjPxKslQDL7rm-A8IotKNovAZqGaEhxP2iii6dfAGHQHSXsIScgyA83zBdKqMkV9SR-nGgPSxahXY8hKq14DN9rb1zRtBrNtggdhOQeXGkds8_u_8EKBL0F6JzzTbogLjZV6sD50ZY3gZRtFLKKobze6lnHiNWgw-4P6C3AAa02lNHrFBiQGHpfyOl8tVG03bMVirss2AN3qO2pIhxsatQVVlStHR18TPhgQywZguacKZdSsR2YMPOfh5DY5M4qaUn0HoSI94Wrci_fBS6mPV7wqRp_FqZc3Qt2Rk0MN3xKnQEC_57A0gNsBM4NMoEnOGAsUD5sHLfdEPZBY3QeSxG_TD5A2KGk8oZE2DptPKiYHoO3Phdk2vMuPoXUFeAVzgEvARnxgD3_Jh-JoDTGjWLsb0AAhltdJLpTM8ER3feBDKmzcO9p-oFNZKLSOUHK1P6Tn46utIDRTIWqGpKiLJ1i_-8lTUC3Q4iv-cAsEWNeceBTa2OSX69TPW1jc6BxRjLXuiKcLnlSa-RiZcruCah_T5_eztwWohrZZLBeviek5yR9h9J6pxeSdDped3OFJdR2jYaVcpPPqSBZE",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\" : 0.01,\n  \"accountId\": \"4b345a2c-093a-4b5a-b4ab-80313413859c\",\n  \"memo\": \"This is a note\",\n  \"expiration\": 900\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://ibex-plugin-islandbitcoin.replit.app/api/v1/lightningInvoice",
+							"protocol": "https",
+							"host": [
+								"ibex-plugin-islandbitcoin",
+								"replit",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"lightningInvoice"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invoice by boult11",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTAyMjI2NzksIklEIjoiIiwiVHlwZSI6ImFjY2VzcyIsIlVzZXJJRCI6IjFkZDcxZmZhLTUxOGUtNDJjZS05ZGVkLWZlMjU0YzliNDRiYiIsIlBlcm1pc3Npb25zIjpudWxsLCJQb29sIjoiSUJFWF9IVUIifQ.fXl9EUV_R9QZf2o-oARXBdWmo3N_h4TQR3P8Wktka8oPUKvWMdeJIaB1GSwwf1QfordedwOarbU9CQJ8NRCP_qh6_iTjjPxKslQDL7rm-A8IotKNovAZqGaEhxP2iii6dfAGHQHSXsIScgyA83zBdKqMkV9SR-nGgPSxahXY8hKq14DN9rb1zRtBrNtggdhOQeXGkds8_u_8EKBL0F6JzzTbogLjZV6sD50ZY3gZRtFLKKobze6lnHiNWgw-4P6C3AAa02lNHrFBiQGHpfyOl8tVG03bMVirss2AN3qO2pIhxsatQVVlStHR18TPhgQywZguacKZdSsR2YMPOfh5DY5M4qaUn0HoSI94Wrci_fBS6mPV7wqRp_FqZc3Qt2Rk0MN3xKnQEC_57A0gNsBM4NMoEnOGAsUD5sHLfdEPZBY3QeSxG_TD5A2KGk8oZE2DptPKiYHoO3Phdk2vMuPoXUFeAVzgEvARnxgD3_Jh-JoDTGjWLsb0AAhltdJLpTM8ER3feBDKmzcO9p-oFNZKLSOUHK1P6Tn46utIDRTIWqGpKiLJ1i_-8lTUC3Q4iv-cAsEWNeceBTa2OSX69TPW1jc6BxRjLXuiKcLnlSa-RiZcruCah_T5_eztwWohrZZLBeviek5yR9h9J6pxeSdDped3OFJdR2jYaVcpPPqSBZE"
+							}
+						],
+						"url": {
+							"raw": "https://ibex-plugin-islandbitcoin.replit.app/api/v1/lightningInvoice/lnbc350n1pjd2fp3pp5rxn2fqs5vsc5qy9fln8as36ahsylcqh4estranveu0xued9846wqdqh235xjueqd9ejqcfqdehhgegcqzzsxqzuysp5yke2qdzsgalux6efy5nyhl7nhec3he28huu96qqzuafcrjnhp7fq9qyyssqn00d6kvqxs60sejr54wp62s34zyxxsd9699r59fe6etayqg6m7xzr33tay2uy6krt9cpjyj7mfaequpaykzy67k2t75tmz6n3pvz50sqk605ve",
+							"protocol": "https",
+							"host": [
+								"ibex-plugin-islandbitcoin",
+								"replit",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"lightningInvoice",
+								"lnbc350n1pjd2fp3pp5rxn2fqs5vsc5qy9fln8as36ahsylcqh4estranveu0xued9846wqdqh235xjueqd9ejqcfqdehhgegcqzzsxqzuysp5yke2qdzsgalux6efy5nyhl7nhec3he28huu96qqzuafcrjnhp7fq9qyyssqn00d6kvqxs60sejr54wp62s34zyxxsd9699r59fe6etayqg6m7xzr33tay2uy6krt9cpjyj7mfaequpaykzy67k2t75tmz6n3pvz50sqk605ve"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete invoice by boult 11",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/v1/lightningInvoice/lnbc35180n1pjtlzhnpp530q83cfgx64z9z3wjqsaqf90v2ne0n2ke23lg3g4t28cjh7njh3sdqh235xjueqd9ejqcfqdehhgegcqzzsxqzuysp5ejf807t3sd3wp7v7p45dv88epvx84l09jw5z94u0lvrpr8mzs5vs9qyyssqezke5q2pnyntgx9qwcpkxqrd53e3fn5h8l4lcfhvcr0gtqmhkmjxlqyr25wdjtycr8fxm5zy72mwjwwh6xn3kc0t9fg9qt8u34dycrqpdkws2k",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"v1",
+								"lightningInvoice",
+								"lnbc35180n1pjtlzhnpp530q83cfgx64z9z3wjqsaqf90v2ne0n2ke23lg3g4t28cjh7njh3sdqh235xjueqd9ejqcfqdehhgegcqzzsxqzuysp5ejf807t3sd3wp7v7p45dv88epvx84l09jw5z94u0lvrpr8mzs5vs9qyyssqezke5q2pnyntgx9qwcpkxqrd53e3fn5h8l4lcfhvcr0gtqmhkmjxlqyr25wdjtycr8fxm5zy72mwjwwh6xn3kc0t9fg9qt8u34dycrqpdkws2k"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Lightning Payment",
+			"item": [
+				{
+					"name": "Decode",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://ibex-plugin-islandbitcoin.replit.app/api/v1/lightningPayment/decode/lnbc350n1pjd2fp3pp5rxn2fqs5vsc5qy9fln8as36ahsylcqh4estranveu0xued9846wqdqh235xjueqd9ejqcfqdehhgegcqzzsxqzuysp5yke2qdzsgalux6efy5nyhl7nhec3he28huu96qqzuafcrjnhp7fq9qyyssqn00d6kvqxs60sejr54wp62s34zyxxsd9699r59fe6etayqg6m7xzr33tay2uy6krt9cpjyj7mfaequpaykzy67k2t75tmz6n3pvz50sqk605ve",
+							"protocol": "https",
+							"host": [
+								"ibex-plugin-islandbitcoin",
+								"replit",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"lightningPayment",
+								"decode",
+								"lnbc350n1pjd2fp3pp5rxn2fqs5vsc5qy9fln8as36ahsylcqh4estranveu0xued9846wqdqh235xjueqd9ejqcfqdehhgegcqzzsxqzuysp5yke2qdzsgalux6efy5nyhl7nhec3he28huu96qqzuafcrjnhp7fq9qyyssqn00d6kvqxs60sejr54wp62s34zyxxsd9699r59fe6etayqg6m7xzr33tay2uy6krt9cpjyj7mfaequpaykzy67k2t75tmz6n3pvz50sqk605ve"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Fee",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://ibex-plugin-islandbitcoin.replit.app/api/v1/lightningPayment/fee/lnbc350n1pjd2fp3pp5rxn2fqs5vsc5qy9fln8as36ahsylcqh4estranveu0xued9846wqdqh235xjueqd9ejqcfqdehhgegcqzzsxqzuysp5yke2qdzsgalux6efy5nyhl7nhec3he28huu96qqzuafcrjnhp7fq9qyyssqn00d6kvqxs60sejr54wp62s34zyxxsd9699r59fe6etayqg6m7xzr33tay2uy6krt9cpjyj7mfaequpaykzy67k2t75tmz6n3pvz50sqk605ve",
+							"protocol": "https",
+							"host": [
+								"ibex-plugin-islandbitcoin",
+								"replit",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"lightningPayment",
+								"fee",
+								"lnbc350n1pjd2fp3pp5rxn2fqs5vsc5qy9fln8as36ahsylcqh4estranveu0xued9846wqdqh235xjueqd9ejqcfqdehhgegcqzzsxqzuysp5yke2qdzsgalux6efy5nyhl7nhec3he28huu96qqzuafcrjnhp7fq9qyyssqn00d6kvqxs60sejr54wp62s34zyxxsd9699r59fe6etayqg6m7xzr33tay2uy6krt9cpjyj7mfaequpaykzy67k2t75tmz6n3pvz50sqk605ve"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pay Invoice",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTA0NzU2MDcsIklEIjoiIiwiVHlwZSI6ImFjY2VzcyIsIlVzZXJJRCI6IjFkZDcxZmZhLTUxOGUtNDJjZS05ZGVkLWZlMjU0YzliNDRiYiIsIlBlcm1pc3Npb25zIjpudWxsLCJQb29sIjoiSUJFWF9IVUIifQ.VZgSfu03kGS1bZp29WAmiu9Ej8lJiHiBbI76NkuJ8PMHCs15o7OmKVxAGebR7hAd9KXxvx9Rvou2JnM1gTGecInndlRTALb8zLGTo-k3ctRp0bxkJ5GyqkAZlTdiQOK9B5uS24W42Zeqgj6hzW-icCa7XrOOmk3TjUdLWJQKgVJ7jAh7GLo1pvFQlDUDz0oKBidLZB8FFYHlBHRl_i8yzisAaBOiszBce1Ss4drfC3Vi7HoTOWk6M2ioGZ7N6gzrB2tlVb89SFcqvxgl-X5VRy8aQm_-Ol4KfAFDrKAxJnHmx_pgQjEm1Y5XIOkNVgQPnk-Az9yvKK_wrNMbihNZ0VLw3BEg2pDkCNjb_ymPeRExqZ9pcXdO8H_8z0uDsTq56xZAiv8Ct5MHZQhTe5K5nz8YSQSsvNThUuVa2JTGu9j_QnHuE0sm3vRK2jSdhywObeFjl4r40z2VpKEQTpp8DLyAGqb2BAlJYefIc-g3Xn9n43x2vQLWp_UIT5WlD-H2adaygYSAaNRGRxEAh_WTwymhbWQdswJtdTtsoEJKl-vf_8hEODHPpOBv-2iwhTHDQKnFZ-7lMAslMGryncBRAiYshu8k-UWk-xSP9aEsptEinefpI4YpLZwuYQde2jqMh2adnZDPP56ECj9cyEaaWJGN_Q1zQnVPmOpfNHUCPjQ"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"bolt11\": \"lnbc350n1pjd2fp3pp5rxn2fqs5vsc5qy9fln8as36ahsylcqh4estranveu0xued9846wqdqh235xjueqd9ejqcfqdehhgegcqzzsxqzuysp5yke2qdzsgalux6efy5nyhl7nhec3he28huu96qqzuafcrjnhp7fq9qyyssqn00d6kvqxs60sejr54wp62s34zyxxsd9699r59fe6etayqg6m7xzr33tay2uy6krt9cpjyj7mfaequpaykzy67k2t75tmz6n3pvz50sqk605ve\",\n  \"accountId\": \"60cec3f0-3ed7-4003-9462-cf8b5f7468f\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://ibex-plugin-islandbitcoin.replit.app/api/v1/lightningPayment/pay",
+							"protocol": "https",
+							"host": [
+								"ibex-plugin-islandbitcoin",
+								"replit",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"lightningPayment",
+								"pay"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Payment Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/v1/lightningPayment/paymentInfo/lnbc690n1pjv9rkzpp5vj5vl237ca5h2q356m0tyeehcsyc644trpcdrlgyt2ypqmfqcf6qdqh235xjueqd9ejqcfqdehhgegcqzzsxqzuysp5p0ys448a057dupd4d828astdxhwdnezepuywx2qs4szxff5rnq5s9qyyssqg3cm3krn4m96fxhwatm59slzgn5ve4y70td9f7z95a4v8hgnfasp9gnj4ute3mmqggj7fpv95lsc7d7vf02z228vukflwewja06crrcqcytgry",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"v1",
+								"lightningPayment",
+								"paymentInfo",
+								"lnbc690n1pjv9rkzpp5vj5vl237ca5h2q356m0tyeehcsyc644trpcdrlgyt2ypqmfqcf6qdqh235xjueqd9ejqcfqdehhgegcqzzsxqzuysp5p0ys448a057dupd4d828astdxhwdnezepuywx2qs4szxff5rnq5s9qyyssqg3cm3krn4m96fxhwatm59slzgn5ve4y70td9f7z95a4v8hgnfasp9gnj4ute3mmqggj7fpv95lsc7d7vf02z228vukflwewja06crrcqcytgry"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "currency",
+			"item": [
+				{
+					"name": "List",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/v1/onchain",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"v1",
+								"onchain"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Onchain",
+			"item": [
+				{
+					"name": "Create address",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"accountId\" :\"78fe65e8-1047-4452-b10b-a79597e0fba9\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/v1/onchain",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"v1",
+								"onchain"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Send To Address",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"accountId\": \"60cec3f0-3ed7-4003-9462-cf8b5f87468f\",\n  \"address\": \"bc1qan4tkqgrghgw2kcxazu27067u47acakyryrddy\",\n  \"amount\": 0.1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/v1/onchain/sendToAddress",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"v1",
+								"onchain",
+								"sendToAddress"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Estimate Fee",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/v1/onchain/fee?address=bc1qan4tkqgrghgw2kcxazu27067u47acakyryrddy&amount=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"v1",
+								"onchain",
+								"fee"
+							],
+							"query": [
+								{
+									"key": "address",
+									"value": "bc1qan4tkqgrghgw2kcxazu27067u47acakyryrddy"
+								},
+								{
+									"key": "amount",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Transaction Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/v1/onchain/c7071261-0b3c-4701-b310-519f20de04d8",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"v1",
+								"onchain",
+								"c7071261-0b3c-4701-b310-519f20de04d8"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "LNURL Pay",
+			"item": [
+				{
+					"name": "create url",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"accountId\": \"4b345a2c-093a-4b5a-b4ab-80313413859c\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/v1/lnurl",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"v1",
+								"lnurl"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "decode lnurl",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/v1/lnurl/decodeLNURL?lnurl=LNURL1DP68GURN8GHJ76TZV4UXSATZ9E5KYETCD4JHYCMPV3HJUCM0D5HKCMN4WFKZ7URP0YHKJMNKDA5KXEFDWFJHZATFWFJK6ETWW3EN76E3843NZCTXXSCNQEF4VG6N2WRZXCUNJDRZV9SKYVFCX56NXE3SXQUKYDPCX4SNSET9VVCRGE3CVVERQCF5X5CKGDFKXSCKXEP4V93NVC3KJWLRRY",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"v1",
+								"lnurl",
+								"decodeLNURL"
+							],
+							"query": [
+								{
+									"key": "lnurl",
+									"value": "LNURL1DP68GURN8GHJ76TZV4UXSATZ9E5KYETCD4JHYCMPV3HJUCM0D5HKCMN4WFKZ7URP0YHKJMNKDA5KXEFDWFJHZATFWFJK6ETWW3EN76E3843NZCTXXSCNQEF4VG6N2WRZXCUNJDRZV9SKYVFCX56NXE3SXQUKYDPCX4SNSET9VVCRGE3CVVERQCF5X5CKGDFKXSCKXEP4V93NVC3KJWLRRY"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invoice Requirement",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/v1/lnurl/invoiceRequirement?k1=c1af410e5b558b6994baab18553f009b485a8eec04f8c20a451d5641cd5ac6b6",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"v1",
+								"lnurl",
+								"invoiceRequirement"
+							],
+							"query": [
+								{
+									"key": "k1",
+									"value": "c1af410e5b558b6994baab18553f009b485a8eec04f8c20a451d5641cd5ac6b6"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pay Invoice",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/v1/lnurl/pay?k1=c1af410e5b558b6994baab18553f009b485a8eec04f8c20a451d5641cd5ac6b6&lnurl=LNURL1DP68GURN8GHJ76TZV4UXSATZ9E5KYETCD4JHYCMPV3HJUCM0D5HKCMN4WFKZ7URP0YHKJMNKDA5KXEFDWFJHZATFWFJK6ETWW3EN76E3843NZCTXXSCNQEF4VG6N2WRZXCUNJDRZV9SKYVFCX56NXE3SXQUKYDPCX4SNSET9VVCRGE3CVVERQCF5X5CKGDFKXSCKXEP4V93NVC3KJWLRRY&amount=10&comment=Helllo world Comment for lnurls pay",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"v1",
+								"lnurl",
+								"pay"
+							],
+							"query": [
+								{
+									"key": "k1",
+									"value": "c1af410e5b558b6994baab18553f009b485a8eec04f8c20a451d5641cd5ac6b6"
+								},
+								{
+									"key": "lnurl",
+									"value": "LNURL1DP68GURN8GHJ76TZV4UXSATZ9E5KYETCD4JHYCMPV3HJUCM0D5HKCMN4WFKZ7URP0YHKJMNKDA5KXEFDWFJHZATFWFJK6ETWW3EN76E3843NZCTXXSCNQEF4VG6N2WRZXCUNJDRZV9SKYVFCX56NXE3SXQUKYDPCX4SNSET9VVCRGE3CVVERQCF5X5CKGDFKXSCKXEP4V93NVC3KJWLRRY"
+								},
+								{
+									"key": "amount",
+									"value": "10"
+								},
+								{
+									"key": "comment",
+									"value": "Helllo world Comment for lnurls pay"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pay LNURL",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"params\": {\n        \"callback\": \"https://ibexhub.ibexmercado.com/lnurl/pay/invoice?k1=c1af410e5b558b6994baab18553f009b485a8eec04f8c20a451d5641cd5ac6b6\",\n        \"maxSendable\": 100000000000,\n        \"minSendable\": 1000,\n        \"metadata\": \"[[\\\"text/plain\\\",\\\"Paying to LnUrl Pay\\\"]]\",\n        \"tag\": \"payRequest\",\n        \"commentAllowed\": 140\n    },\n    \"amount\": 10,\n    \"accountId\": \"4b345a2c-093a-4b5a-b4ab-80313413859c\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/v1/lnurl/paylnurl",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"v1",
+								"lnurl",
+								"paylnurl"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
