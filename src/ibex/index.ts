@@ -19,7 +19,7 @@ import { closeDatabase, setupDatabase } from "@ibex/knex";
     app.use("/api/v1", routes);
 
     // Start the server
-    const port = process.env.PORT || 4000;
+    const port = process.env.PORT || 8760;
     app.listen(port, () => {
       console.log(`Server is running on port ${port}`);
     });
