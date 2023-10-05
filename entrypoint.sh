@@ -11,7 +11,7 @@ trap _term SIGTERM
 
 echo "Starting Container..."
 
-npm run start-ibex &
+npm run start &
 
 ibex_process=$!
 wait $ibex_process
