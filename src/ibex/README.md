@@ -48,5 +48,5 @@ Once you have completed the setup and configuration, it's time to run the projec
 npm start-ibex
 ```
 
-This command will start the server, and the project will be accessible at `http://localhost:4000/`. You can change the port number in the `.env` file if necessary.
+This command will start the server, and the project will be accessible at `http://localhost:8760/`. You can change the port number in the `.env` file if necessary.
 
