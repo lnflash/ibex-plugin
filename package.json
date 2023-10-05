@@ -4,8 +4,7 @@
   "description": "![galoy-ibex-plugin-logo](https://github.com/lnflash/ibex-plugin/assets/34528298/40eb0306-560d-4c71-aded-bd984c3f7e29)",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --exec 'ts-node -r tsconfig-paths/register' src/index.ts",
-    "start-ibex": "nodemon --watch 'src/**/index.ts' --exec 'ts-node -r tsconfig-paths/register' src/ibex/index.ts",
+    "start-ibex": "nodemon --watch 'src/**/*.ts' --exec 'ts-node -r tsconfig-paths/register' src/ibex/index.ts",
     "test": "jest",
     "test:watch": "jest --watch"
   },
