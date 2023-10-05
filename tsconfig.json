@@ -12,7 +12,8 @@
       "resolveJsonModule": true,
       "paths": {
         "@ibex/*": [
-            "./src/ibex/*"
+            "./src/ibex/*",
+            "./lib/*"
         ],
     },
     },
