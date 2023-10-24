@@ -28,15 +28,25 @@ async function createAccountHandler(req: Request, res: Response): Promise<void> 
 }
 
 async function getAccountByIdHandler(req: Request, res: Response): Promise<void> {
+  const token = getToken(req, res);
+  const { accountId } = req.params;
+  if (!(typeof accountId === "string")) {
+    res.status(400).json({ error: "Invalid request body" });
+    return;
+  }
   try {
-    const { accountId } = req.params;
+    const response = await axios.get(`${IBEXEnum.BASE_URL}v2/account/${accountId}`, {
+      headers: { Authorization: token },
+    });
     const account = await getAccountById(accountId);
     if (!account) {
       res.status(404).json({ message: "Account not found" });
     } else {
-      res.status(200).json({ account });
+      res.status(200).json({ data: response.data });
     }
   } catch (error: any) {
+    console.log({ error });
+
     res.status(error.response?.status || 500).json({ error: error.response?.data?.error || "Internal Server Error" });
   }
 }

@@ -7,7 +7,7 @@ const router: Router = express.Router();
 router.get("/", listAccountsHandler);
 router.post("/", ibexAuthMiddleWare, createAccountHandler);
 router.put("/:accountId", ibexAuthMiddleWare, updateAccountHandler);
-router.get("/:accountId", getAccountByIdHandler);
+router.get("/:accountId", ibexAuthMiddleWare, getAccountByIdHandler);
 
 // GET /users/:id - Get a user by ID
 // router.get('/:id', getUserByIdHandler);

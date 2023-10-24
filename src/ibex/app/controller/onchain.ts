@@ -28,13 +28,14 @@ async function createBitcoinAddressHandler(req: Request, res: Response): Promise
     res.status(error.response?.status || 500).json({ error: error.response?.data?.error || "Internal Server Error" });
   }
 }
+
 async function estimateFee(token: string | undefined, address: string, amount: number, currency: number = 0) {
   try {
     const response: AxiosResponse<{ feeSat: number }> = await axios.get(`${IBEXEnum.BASE_URL}v2/onchain/estimate-fee`, {
       headers: { Authorization: token },
-      params: { address, amount, currency },
+      params: { address, amount, "currency-id": currency },
     });
-    return response.data.feeSat;
+    return response.data;
   } catch (error) {
     console.log({ error });
     throw error;
@@ -45,13 +46,13 @@ async function estimateFeeHandler(req: Request, res: Response): Promise<void> {
   const token = getToken(req, res);
 
   try {
-    const { address, amount } = req.query;
-    if (!(typeof address === "string" && amount)) {
+    const { address, amount, currency } = req.query;
+    if (!(typeof address === "string" && amount && currency)) {
       res.status(400).json({ error: "Invalid request body" });
       return;
     }
-    const feeSat = await estimateFee(token, address, +amount);
-    res.status(200).json({ data: feeSat });
+    const response = await estimateFee(token, address, +amount, +currency);
+    res.status(200).json({ data: response });
   } catch (error: any) {
     console.log({ error });
 
